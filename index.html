@@ -40,10 +40,12 @@
 			}
 		</style>
 		<script>
-			var participants = JSON.parse('["socho", "saras", "idk"]');
+			var x = "data1.txt";
+			var y = "data2.txt";
+			var participants = JSON.parse(readTextFile(x));
 			var noOfpersons = participants.length;
 			//the no of paricipants
-			var increments = JSON.parse('[["socho", 200, 1000],["socho", 500, 6000], ["saras", 200, 2000], ["idk", 200, 3000], ["saras", 200, 4000]]');
+			var increments = JSON.parse(readTextFile(y));
 			var scores = [];
 
 			function compare(a, b){
@@ -107,6 +109,29 @@
 					i++;
 				}
 			}
+
+
+			/*<StackOverflow part>*/
+			function readTextFile(file)
+			{
+				var allText;
+			    var rawFile = new XMLHttpRequest();
+			    rawFile.open("GET", file, false);
+			    rawFile.onreadystatechange = function ()
+			    {
+			        if(rawFile.readyState === 4)
+			        {
+			            if(rawFile.status === 200 || rawFile.status == 0)
+			            {
+			                allText = rawFile.responseText;
+			                
+			            }
+			        }
+			    }
+			    rawFile.send(null);
+			    return allText;
+			}
+			/*</StackOverflow part>*/
 		</script>
 	</head>
 	<body>
