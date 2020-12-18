@@ -1,0 +1,117 @@
+<!doctype html>
+<html>
+	<head>
+		<style>
+			body{
+				margin:0;
+				background:#ddd;
+				font-family:Open Sans;
+			}
+			#container{
+				width:100vw;
+				height:100vh;
+				margin:10vh;
+				position:relative;
+				box-sizing: border-box;
+			}
+			.impro{
+				display:flex;
+				position: absolute;
+				transition: all 0.2s linear;
+			}
+			.bar{
+				transition:all 0.2s linear;
+				height:12px;
+				width:0px;
+				border-radius:6px;
+				margin-top:7.5px;
+				background:#05f;
+				color:#fff;
+				font-size:10px;
+				text-align:right;
+			}
+			.status{
+				flex:1;
+			}
+			.name{
+				width:100px;
+				text-align:right;
+				margin-right:10px;
+			}
+		</style>
+		<script>
+			var participants = JSON.parse('["socho", "saras", "idk"]');
+			var noOfpersons = participants.length;
+			//the no of paricipants
+			var increments = JSON.parse('[["socho", 200, 1000],["socho", 500, 6000], ["saras", 200, 2000], ["idk", 200, 3000], ["saras", 200, 4000]]');
+			var scores = [];
+
+			function compare(a, b){
+				if(a.score != b.score)
+					return (a.score > b.score)?-1:1;
+				return (a.time <= b.time)?-1:1;
+			}
+			window.onload=function(){
+				pre();
+			};
+			function pre(){
+				var i =0;
+				var container = document.getElementById("container");
+				while(i<noOfpersons){
+					var obj = {pid:participants[i], score:0, time:0};
+					scores.push(obj);
+					var div = document.createElement("div");
+					div.id = participants[i];
+					div.className = "impro";
+					div.style.top = (25*i) + "px";
+					container.appendChild(div); 
+					div.innerHTML ="<div class =\"name\">"+participants[i]+"</div><div class=\"status\"><div class=\"bar\" id = \"bar_" +participants[i]+"\"></div></div>";
+					i++;
+				}
+				i = 0;
+				while(i<increments.length){
+					var pid = increments[i][0];
+					var score = increments[i][1];
+					var time = increments[i][2];
+					setTimeout(update, time, pid, score, time);
+					i++;
+				}
+			}
+			function update(pid, score, time){
+				console.log("bar_"+pid);
+				var div = document.getElementById("bar_"+pid);
+				var w = div.clientWidth;
+				div.style.width = (w + score) + "px";
+				div.innerHTML = (w + score) + "&nbsp;";
+
+				var i = 0;
+				while(i<noOfpersons){
+					if(scores[i].pid == pid){
+						scores[i].score = scores[i].score + score;
+						scores[i].time = time;
+						console.log('updated '+scores[i].time + " " + scores[i].score);
+						break;
+					}
+					i++;
+				}
+				update_order();
+			}
+			function update_order(){
+				scores.sort(compare);
+				var i =0;
+				while(i<noOfpersons){
+					console.log(scores[i].pid);
+					var div = document.getElementById(scores[i].pid);
+					div.style.top = (25*i) + "px";
+					div.style.zIndex = i;
+					i++;
+				}
+			}
+		</script>
+	</head>
+	<body>
+		<div id = "container">
+			
+		</div>
+	</body>
+</html>
